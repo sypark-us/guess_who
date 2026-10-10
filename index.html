@@ -27,7 +27,7 @@
     min-height: 0;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: minmax(0, 1.16fr) minmax(0, .84fr);
+    grid-template-rows: minmax(0, .74fr) minmax(0, 1.26fr);
     gap: 10px;
     align-content: stretch;
   }
@@ -50,6 +50,9 @@
   .stack .row button { padding: 7px 5px; font-size: 11px; }
   .stack .person { padding: 7px; margin-bottom: 5px; }
   .stack > .panel:nth-child(1) > .content { flex: 1; min-height: 0; overflow-y: auto; }
+  .stack > .panel:nth-child(1) .small { font-size: 11px; line-height: 1.3; }
+  .stack > .panel:nth-child(2) #nearby { max-height: 108px; }
+  .stack > .panel:nth-child(2) #detail { font-size: 11px; line-height: 1.25; max-height: 46px; overflow: auto; }
   .stack > .panel:nth-child(2) > .content {
     display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden;
   }
@@ -85,13 +88,26 @@
 }
 /* Keyboard users should always see which UI control is focused. */
 button:focus-visible, .person:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+
+.case-file{border:1px solid #31465b;border-radius:7px;padding:8px;margin:0 0 9px;background:#142336}
+.case-file>.tag{margin-left:5px}
+.evidence{border-left:2px solid #4b6575;padding:5px 7px;margin:7px 0!important;background:#1c2d3b;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+.evidence.accent{border-color:#61dfd0}
+.evidence.warn{border-color:#ffd28b}
+.evidence strong{font-size:10px;letter-spacing:.3px}
+@media(min-width:980px){
+  .stack> .panel:nth-child(3) .small.muted{font-size:10px;line-height:1.3}
+  .stack> .panel:nth-child(2) #nearby{max-height:98px}
+  .stack> .panel:nth-child(1) .content{padding:7px 9px}
+  .stack> .panel:nth-child(1) .content p{margin:4px 0}
+}
 </style></head><body>
 <header><div><h1>CURSED 100 <small> / HONG KONG</small></h1><small>NEON NOIR • SUPERNATURAL DEDUCTION</small></div><div class="row"><button id="sound">♫ Sound: Off</button><button id="help">? How to play</button></div></header>
 <main class="shell"><section class="world panel"><div class="canvaswrap"><canvas id="map" width="768" height="544" aria-label="Top-down Hong Kong city map"></canvas><div id="overlay">WASD / arrow keys to move • click a walkable tile to walk • E to interact</div></div><div class="hud"><div class="stat"><span>NIGHT</span><strong id="night">1</strong></div><div class="stat"><span>TIME LEFT</span><strong id="time">12:00</strong></div><div class="stat"><span>CURSED ALIVE</span><strong id="alive">20</strong></div><div class="stat"><span>YOUR STATUS</span><strong id="status" class="warn">UNFULFILLED</strong></div></div><div class="legend"><span><i class="dot" style="background:#fce2a4"></i>You</span><span><i class="dot" style="background:#8bd5fa"></i>Other people</span><span><i class="dot" style="background:#f58dbb"></i>Selected</span><span>People have no visible cursed markers.</span></div></section>
 <aside class="stack">
 <section class="panel"><h2>My curse</h2><div class="content"><strong id="curseName" class="pink"></strong><p id="curseText" class="small"></p><div class="small muted">Each night, eliminate a CURSED target. If your curse kills a civilian, you die too. If you fail before dawn, you die.</div><div class="row"><button id="markCurse" class="primary">Set selected as target</button><button id="trigger">Use curse</button></div><div class="small" id="curseState"></div></div></section>
 <section class="panel"><h2>Nearby people / Actions</h2><div class="content"><div id="nearby" class="list small"></div><div class="row"><button id="talk">Talk</button><button id="observe">Observe</button><button id="investigate">Investigate (2 min)</button></div><div id="detail" class="small muted">Move close to a person and select them.</div></div></section>
-<section class="panel"><h2>Detective's notebook</h2><div class="content"><div class="row"><button id="suspect">Mark suspicious</button><button id="clear">Clear mark</button></div><div id="notes" class="list small muted"></div></div></section>
+<section class="panel"><h2>Detective's notebook</h2><div class="content"><div class="row"><button id="suspect">Mark suspicious</button><button id="clear">Clear mark</button></div><div class="small muted">Compare statements, witness accounts, and independent records. Claims may be false.</div><div id="notes" class="list small muted"></div></div></section>
 <section class="panel"><h2>Nightly incidents</h2><div id="log" class="content log" aria-live="polite"></div><div class="content" style="border-top:1px solid #344258"><button id="end" class="primary" style="width:100%">Advance to Dawn →</button><small class="muted">Time advances through movement and actions, or end the night manually.</small></div></section>
 </aside></main><p class="footer">Prototype: 100 simulated residents (20 cursed, 80 civilian) • 2D playable district • 3 curse archetypes • seed-based identities • English-first translation keys • Web Audio synthesized atmosphere. All identities are hidden until proven by outcomes.</p>
 <div id="welcome" class="dialog"><div class="modal"><h2>THE FIRST NIGHT</h2><p>One hundred residents of a Hong Kong neighborhood wake to a strange new reality. Twenty of them, including you, are cursed.</p><p>Only cursed victims can satisfy the hunger. Kill an innocent and you die with them. Let the night end without a kill and you die alone.</p><p>Your power is different every run. Watch people's routines, gather evidence, manipulate their actions, and survive.</p><p><strong>Move:</strong> WASD / arrow keys or map click. <strong>Interact:</strong> E near a person. <strong>Investigate:</strong> gather potentially imperfect evidence. People may lie.</p><button id="start" class="primary">ENTER MONG KOK</button></div></div>
@@ -112,7 +128,139 @@ const curses=[
 {id:"witness",name:"The Witness",description:"A selected target dies after you observe them twice. Observe them twice, then use your curse.",goal:2,action:"observe"},
 {id:"confession",name:"The Confession",description:"A selected target dies after you investigate them and speak to them once. Then use your curse.",goal:2,action:"mixed"}];
 function spawn(){let p;do{p={x:1+Math.floor(rng()*22),y:1+Math.floor(rng()*15)}}while(blocked(p.x,p.y)||Math.abs(p.x-S.player.x)+Math.abs(p.y-S.player.y)<2);return p}
-function init(){S.curse=pick(curses);S.people=Array.from({length:99},(_,i)=>({...spawn(),id:i,name:names[i%names.length]+(i>=names.length?" "+(Math.floor(i/names.length)+1):""),cursed:i<19,alive:true,trust:Math.round(rng()*60),behavior:pick(["quiet","social","watchful","restless"]),seen:0,talked:0,investigated:0,rumor:pick(["I saw someone pacing near the hotel.","The market has been strangely quiet.","I heard shouting at the old apartments.","Nobody trusts the night patrol.","I cannot tell who is safe."])}));shuffle(S.people);S.people.forEach((p,i)=>p.id=i);log("The first night begins. Somewhere in this district, the cursed are hunting.");render()}
+function init(){S.curse=pick(curses);S.people=Array.from({length:99},(_,i)=>({...spawn(),id:i,name:names[i%names.length]+(i>=names.length?" "+(Math.floor(i/names.length)+1):""),cursed:i<19,alive:true,trust:Math.round(rng()*60),behavior:pick(["quiet","social","watchful","restless"]),seen:0,talked:0,investigated:0}));shuffle(S.people);S.people.forEach((p,i)=>p.id=i);buildCaseWorld();log("The first night begins. Compare witness stories with verified records; strange behavior alone is not proof.");render()}
+
+/* Persistent case evidence: conversations, recorded sightings and independently
+   checkable location records refer to the SAME underlying simulated incidents.
+   These records are created without revealing the hidden cursed flag. */
+const CIVIL_ACTIONS=[
+  "delivered parcels for a local shop",
+  "waited for a late-paying customer",
+  "met a colleague about tomorrow's shift",
+  "passed an envelope to a neighbor",
+  "asked another resident for directions",
+  "carried restaurant supplies"
+];
+const HUNT_ACTIONS=[
+  "asked a resident to meet in private",
+  "followed a resident toward a quiet street",
+  "offered to escort a stranger home",
+  "pressed someone to keep a conversation secret",
+  "requested a resident's nightly schedule",
+  "passed a sealed envelope to a resident"
+];
+const PROFESSIONS=["delivery driver","shop assistant","hotel clerk","office worker","cook","security guard","student","taxi driver","market vendor","building caretaker"];
+function atClock(minute){return String(Math.floor(minute/60)).padStart(2,"0")+":"+String(minute%60).padStart(2,"0")}
+function sourceName(person){return person.name}
+function addEvidence(id,entry){
+  const list=S.notes[id]||(S.notes[id]=[]);
+  if(list.some(n=>n.key===entry.key))return false;
+  list.push(entry);
+  if(entry.kind==="record" || entry.kind==="claim")checkContradiction(id);
+  return true;
+}
+function checkContradiction(id){
+  const person=S.people.find(p=>p.id===id);if(!person)return;
+  const list=S.notes[id]||[];
+  const claim=list.find(n=>n.key==="claim:"+id);
+  const verified=list.find(n=>n.key==="record:"+id);
+  if(claim&&verified&&person.claimedPlace!==person.caseEvent.place){
+    const statement="CONTRADICTION: "+person.name+" claimed "+person.claimedPlace+", but an independent entry record places them at "+person.caseEvent.place+" at "+atClock(person.caseEvent.minute)+".";
+    if(!list.some(n=>n.key==="conflict:"+id))list.unshift({key:"conflict:"+id,kind:"conflict",text:statement});
+    log("Contradiction found in "+person.name+"'s alibi. Check their case file.");
+  }
+}
+function evidenceSummary(p){
+  const list=S.notes[p.id]||[];
+  const conflicts=list.filter(e=>e.kind==="conflict").length;
+  return list.length+" clue"+(list.length===1?"":"s")+(conflicts?" • ALIBI CONFLICT":"");
+}
+function buildCaseWorld(){
+  const cursed=S.people.find(p=>p.cursed);
+  const civilians=S.people.filter(p=>!p.cursed);
+  // Place a viable lead and two potential witnesses close to the spawn.
+  // Other hidden identities remain unknown to the player.
+  [{person:cursed,x:10,y:7},{person:civilians[0],x:12,y:7},{person:civilians[1],x:11,y:9}].forEach(x=>{x.person.x=x.x;x.person.y=x.y});
+  S.events=[];
+  S.people.forEach(p=>{p.job=pick(PROFESSIONS);p.memories=[];p.caseEvent=null;p.claimedPlace=null;p.caseChecked=false;p.investigationCount=0;});
+  // Each person has a stable pre-night activity and a potentially inaccurate alibi.
+  S.people.forEach((p,i)=>{
+    const peer=S.people[(i+7)%S.people.length];
+    const place=pick(venues).name, minute=1025+Math.floor(rng()*49);
+    const suspicious=p.cursed?rng()<.78:rng()<.25;
+    const action=pick(suspicious?HUNT_ACTIONS:CIVIL_ACTIONS);
+    const ev={id:"case-"+p.id,actorId:p.id,otherId:peer.id,
+      place,minute,action,source:pick(["shop entry ledger","street camera","building visitor register","merchant receipt"])};
+    p.caseEvent=ev;S.events.push(ev);
+    // A lie is not proof of a curse. Some innocents lie about private errands.
+    const lie=p.cursed?rng()<.54:rng()<.16;
+    p.claimedPlace=lie?pick(venues.filter(v=>v.name!==place)).name:place;
+  });
+  S.people.forEach((p,i)=>{
+    const witness=S.people[(i+1)%S.people.length];
+    witness.memories.push(p.caseEvent);
+  });
+  // Early witnesses provide correlated accounts of the local cursed candidate.
+  civilians[0].memories.unshift(cursed.caseEvent);
+  civilians[1].memories.unshift(cursed.caseEvent);
+  // Give the player at least one route to a high-quality lead in the opening minutes.
+  log("Tip: Talk to nearby witnesses, then investigate the named suspect to verify their location.");
+}
+function eventDescription(ev){
+  const subject=S.people.find(p=>p.id===ev.actorId);
+  const other=S.people.find(p=>p.id===ev.otherId);
+  return subject.name+" "+ev.action+(other?" near "+other.name:"")+".";
+}
+function talkTo(p){
+  p.talked++;p.trust=Math.min(100,p.trust+3);
+  const witnessEvent=p.memories.length?p.memories[(p.talked-1)%p.memories.length]:null;
+  // Alternate self-alibi with a report of a different person's conduct.
+  const askAlibi=p.talked%2===0 || !witnessEvent;
+  if(askAlibi){
+    const ev=p.caseEvent;
+    const statement=p.name+' says: "At '+atClock(ev.minute)+' I was at '+p.claimedPlace+'. I was busy working as a '+p.job+'."';
+    addEvidence(p.id,{key:"claim:"+p.id,kind:"claim",text:statement});
+    log("STATEMENT: "+statement);
+  }else{
+    const ev=witnessEvent,subject=S.people.find(x=>x.id===ev.actorId);
+    const statement="Witness "+p.name+" says: At "+atClock(ev.minute)+" near "+ev.place+", "+eventDescription(ev);
+    addEvidence(subject.id,{key:"witness:"+ev.id+":"+p.id,kind:"witness",text:statement});
+    log("WITNESS: "+statement);
+  }
+  if(S.target===p.id)markProgress(p,"talk");
+}
+function observePerson(p){
+  p.seen++;
+  const others=S.people.filter(x=>x.alive&&x.id!==p.id&&dist(x,p)<=2);
+  const near=others.length?others[0]:null;
+  const place=closestVenue(p).name;
+  const txt="Directly observed "+p.name+" at "+formatTime()+" near "+place+
+    (near?", standing close to "+near.name:"")+".";
+  const bucket=Math.floor((720-S.time)/10);
+  const key="observed:"+p.id+":"+S.night+":"+bucket+":"+p.x+":"+p.y;
+  const fresh=addEvidence(p.id,{key,kind:"observed",text:txt});
+  log(fresh?"OBSERVED: "+txt:"No new movement worth recording; you already observed this scene.");
+  if(S.target===p.id)markProgress(p,"observe");
+}
+function closestVenue(p){return venues.reduce((best,v)=>dist(p,v)<dist(p,best)?v:best,venues[0])}
+function investigatePerson(p){
+  p.investigated++;
+  const ev=p.caseEvent;
+  if(!p.caseChecked){
+    p.caseChecked=true;
+    const txt="RECORD ["+ev.source+"]: "+p.name+" was logged at "+ev.place+" at "+atClock(ev.minute)+".";
+    addEvidence(p.id,{key:"record:"+p.id,kind:"record",text:txt});
+    log("VERIFIED: "+txt);
+  }else if(p.investigated===2){
+    // Follow-up corroboration uses the existing event, not a new random accusation.
+    const witness=S.people.find(x=>x.memories.includes(ev)&&x.id!==p.id);
+    const txt=witness?"Lead: "+witness.name+" may have witnessed "+p.name+"'s activity at "+ev.place+".":"No additional independent record has been found.";
+    addEvidence(p.id,{key:"lead:"+p.id,kind:"lead",text:txt});
+    log("FOLLOW-UP: "+txt);
+  }else log("No new records for "+p.name+". Revisit another witness or subject.");
+  if(S.target===p.id)markProgress(p,"investigate");
+}
+
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(rng()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
 function current(){return S.people.find(p=>p.id===S.selected&&p.alive)}
 function target(){return S.people.find(p=>p.id===S.target&&p.alive)}
@@ -129,16 +277,35 @@ function walk(dx,dy){if(S.over)return;let x=S.player.x+dx,y=S.player.y+dy;if(blo
 function select(id){const p=S.people.find(x=>x.id===id&&x.alive);if(!p)return;S.selected=id;render()}
 function alertMsg(title,body){$("msgTitle").textContent=title;$("msgBody").textContent=body;$("message").classList.remove("hidden")}
 $("msgClose").onclick=()=>$("message").classList.add("hidden");
-function act(kind){let p=current();if(S.over)return;if(!p||dist(p,S.player)>3){log("Approach a person first.");render();return}if(kind==="talk"){p.talked++;p.trust=Math.min(100,p.trust+5);log(p.name+": “"+p.rumor+"”");if(S.target===p.id&&S.curse.action==="talk")markProgress(p);if(S.target===p.id&&S.curse.action==="mixed")markProgress(p)}else if(kind==="observe"){p.seen++;log("You observe "+p.name+": "+({"quiet":"avoids the crowd","social":"approaches strangers","watchful":"checks both ends of the street","restless":"keeps changing directions"}[p.behavior])+".");if(S.target===p.id&&S.curse.action==="observe")markProgress(p)}else{p.investigated++;let reliable=rng()<.64;let msg= reliable?(p.cursed?"A witness saw "+p.name+" apparently setting up an elaborate trap.":"Records suggest "+p.name+" has a consistent, ordinary routine."):(p.cursed?"A source claims "+p.name+" is an ordinary resident.":"A nervous witness falsely accuses "+p.name+" of strange activity.");S.notes[p.id]=S.notes[p.id]||[];S.notes[p.id].push({text:msg,type:"unverified"});log("Clue: "+msg);if(S.target===p.id&&S.curse.action==="mixed")markProgress(p);sound(620,.14)}tick(kind==="investigate"?2:1)}
-function markProgress(p){p.progress=(p.progress||0)+1;log("Your target moves closer to satisfying your curse ("+Math.min(S.curse.goal,p.progress)+"/"+S.curse.goal+").")}
-function assign(){const p=current();if(!p||dist(p,S.player)>3){log("Get close to the target first.");render();return}S.target=p.id;p.progress=0;log("Target assigned: "+p.name+". Identity remains unknown.");sound(480,.18);render()}
-function invoke(){if(S.fulfilled||S.over)return;let p=target();if(!p){log("Choose a living target first.");render();return}if(dist(p,S.player)>3){log("Your target is too far away.");render();return}if((p.progress||0)<S.curse.goal){log("Curse conditions incomplete. "+(p.progress||0)+"/"+S.curse.goal);render();return}if(!p.cursed){p.alive=false;endGame("THE INNOCENT","Your curse killed "+p.name+", an innocent civilian. The curse turns back upon you.");return}p.alive=false;S.fulfilled=true;log("Your curse claims "+p.name+". They were CURSED. Tonight you are safe.");S.notes[p.id]=[{text:"Confirmed cursed by successful curse.",type:"confirmed"}];sound(80,.7,"sawtooth",.035);alertMsg("CURSE FULFILLED","You eliminated "+p.name+", a cursed resident. You have survived tonight. Explore for more clues or advance to dawn.");render()}
+function act(kind){
+  const p=current();if(S.over)return;
+  if(!p||dist(p,S.player)>3){log("Approach a person first.");render();return}
+  if(kind==="talk")talkTo(p);
+  else if(kind==="observe")observePerson(p);
+  else{investigatePerson(p);sound(620,.14)}
+  tick(kind==="investigate"?2:1);
+}
+function markProgress(p,kind){
+  p.curseActions=p.curseActions||{talk:0,observe:0,investigate:0};
+  p.curseActions[kind]++;
+  // The Confession requires one talk AND one investigation, not any two actions.
+  const actions=p.curseActions;
+  p.progress=S.curse.action==="mixed"?Math.min(actions.talk,1)+Math.min(actions.investigate,1):
+    S.curse.action==="talk"?actions.talk:actions.observe;
+  log("Curse condition progress: "+Math.min(S.curse.goal,p.progress)+"/"+S.curse.goal+".");
+}
+
+function assign(){const p=current();if(!p||dist(p,S.player)>3){log("Get close to the target first.");render();return}S.target=p.id;p.progress=0;p.curseActions={talk:0,observe:0,investigate:0};log("Target assigned: "+p.name+". Identity remains unknown.");sound(480,.18);render()}
+function invoke(){if(S.fulfilled||S.over)return;let p=target();if(!p){log("Choose a living target first.");render();return}if(dist(p,S.player)>3){log("Your target is too far away.");render();return}if((p.progress||0)<S.curse.goal){log("Curse conditions incomplete. "+(p.progress||0)+"/"+S.curse.goal);render();return}if(!p.cursed){p.alive=false;endGame("THE INNOCENT","Your curse killed "+p.name+", an innocent civilian. The curse turns back upon you.");return}p.alive=false;S.fulfilled=true;log("Your curse claims "+p.name+". They were CURSED. Tonight you are safe.");addEvidence(p.id,{key:"confirmed:"+p.id,kind:"confirmed",text:"CONFIRMED: "+p.name+" was cursed. Your power succeeded."});sound(80,.7,"sawtooth",.035);alertMsg("CURSE FULFILLED","You eliminated "+p.name+", a cursed resident. You have survived tonight. Explore for more clues or advance to dawn.");render()}
 function endGame(title,msg){S.over=true;alertMsg(title,msg+" Start a new run by refreshing the page.");render()}
-function dawn(){if(S.over)return;if(!S.fulfilled){endGame("DAWN: YOUR CURSE CLAIMS YOU","You did not eliminate a cursed resident before sunrise.");return}let living=S.people.filter(p=>p.alive&&p.cursed);if(living.length===0){endGame("THE LAST SURVIVOR","No other cursed residents remain. Your curse is broken. You win!");return}let victims=Math.min(living.length-1,Math.max(1,Math.floor(living.length*(.28+rng()*.20))));for(let i=0;i<victims;i++){let candidates=S.people.filter(p=>p.alive&&p.cursed);if(!candidates.length)break;let v=pick(candidates);v.alive=false;log("Report: "+v.name+" was found dead. Rumors suggest they were cursed.");}S.night++;S.time=720;S.fulfilled=false;S.target=null;S.selected=null;S.people.filter(p=>p.alive).forEach(p=>{p.progress=0;p.talked=0;p.seen=0;p.investigated=0});if(S.night>=9){endGame("THE CURSE DEEPENS","The prototype ends after eight nights. More chapters are planned.");return}log("Night "+S.night+" begins. The city grows quieter.");alertMsg("NIGHT "+S.night,"You have survived another dawn. The remaining cursed are more cautious now.");render()}
+function dawn(){if(S.over)return;if(!S.fulfilled){endGame("DAWN: YOUR CURSE CLAIMS YOU","You did not eliminate a cursed resident before sunrise.");return}let living=S.people.filter(p=>p.alive&&p.cursed);if(living.length===0){endGame("THE LAST SURVIVOR","No other cursed residents remain. Your curse is broken. You win!");return}let victims=Math.min(living.length-1,Math.max(1,Math.floor(living.length*(.28+rng()*.20))));for(let i=0;i<victims;i++){let candidates=S.people.filter(p=>p.alive&&p.cursed);if(!candidates.length)break;let v=pick(candidates);v.alive=false;const scene=closestVenue(v).name;
+const report="NIGHT "+S.night+": "+v.name+" was found dead near "+scene+". Cause unknown; no confirmed killer.";
+log("INCIDENT: "+report);
+addEvidence(v.id,{key:"death:"+S.night+":"+v.id,kind:"incident",text:report});}S.night++;S.time=720;S.fulfilled=false;S.target=null;S.selected=null;S.people.filter(p=>p.alive).forEach(p=>{p.progress=0;p.curseActions={talk:0,observe:0,investigate:0};p.talked=0;p.seen=0;p.investigated=0});if(S.night>=9){endGame("THE CURSE DEEPENS","The prototype ends after eight nights. More chapters are planned.");return}log("Night "+S.night+" begins. The city grows quieter.");alertMsg("NIGHT "+S.night,"You have survived another dawn. The remaining cursed are more cautious now.");render()}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function render(){const p=current();$("night").textContent=S.night;$("time").textContent=String(Math.floor(S.time/60)).padStart(2,"0")+":"+String(S.time%60).padStart(2,"0");$("alive").textContent=1+S.people.filter(x=>x.alive&&x.cursed).length;$("status").textContent=S.over?"ENDED":S.fulfilled?"SAFE TONIGHT":"UNFULFILLED";$("status").className=S.fulfilled?"accent":"warn";$("curseName").textContent=S.curse.name;$("curseText").textContent=S.curse.description;$("curseState").textContent=target()?"Target: "+target().name+" • Progress "+(target().progress||0)+"/"+S.curse.goal:"No target selected";$("detail").textContent=p?p.name+" — "+p.behavior+". Trust: "+p.trust+"/100. Identity unknown.":"Move close to a person and select them.";let can=!!p&&dist(p,S.player)<=3&&!S.over;["talk","observe","investigate","markCurse"].forEach(x=>$(x).disabled=!can);$("trigger").disabled=S.over||!target()||S.fulfilled;$("nearby").innerHTML=nearby().map(n=>'<div class="person '+(n.id===S.selected?"selected":"")+'" data-id="'+n.id+'"><strong>'+esc(n.name)+(S.target===n.id?' <span class="tag">TARGET</span>':'')+'</strong><em>'+dist(n,S.player)+' tiles away • '+(S.notes[n.id]?.some(k=>k.type==="suspect")?"Marked suspicious":"Identity unknown")+'</em></div>').join("")||'<p class="muted">No one nearby. Walk along the streets.</p>';$("nearby").querySelectorAll("[data-id]").forEach(e=>e.onclick=()=>select(Number(e.dataset.id)));$("notes").innerHTML=Object.entries(S.notes).map(([id,notes])=>'<p><strong>'+esc(S.people[Number(id)]?.name||"Unknown")+'</strong><br>'+notes.map(x=>'<span class="'+(x.type==="suspect"?"warn":x.type==="confirmed"?"accent":"")+'">'+esc(x.text)+'</span>').join("<br>")+'</p>').join("")||"No entries yet. Observe, talk, investigate, or mark a suspect.";$("log").innerHTML=S.log.map(x=>"<p>"+esc(x)+"</p>").join("");draw()}
+function render(){const p=current();$("night").textContent=S.night;$("time").textContent=String(Math.floor(S.time/60)).padStart(2,"0")+":"+String(S.time%60).padStart(2,"0");$("alive").textContent=1+S.people.filter(x=>x.alive&&x.cursed).length;$("status").textContent=S.over?"ENDED":S.fulfilled?"SAFE TONIGHT":"UNFULFILLED";$("status").className=S.fulfilled?"accent":"warn";$("curseName").textContent=S.curse.name;$("curseText").textContent=S.curse.description;$("curseState").textContent=target()?"Target: "+target().name+" • Progress "+(target().progress||0)+"/"+S.curse.goal:"No target selected";$("detail").textContent=p?p.name+" • "+p.job+" • "+evidenceSummary(p)+" • identity not verified.":"Move close to a person and select them.";let can=!!p&&dist(p,S.player)<=3&&!S.over;["talk","observe","investigate","markCurse"].forEach(x=>$(x).disabled=!can);$("trigger").disabled=S.over||!target()||S.fulfilled;$("nearby").innerHTML=nearby().map(n=>'<div class="person '+(n.id===S.selected?"selected":"")+'" data-id="'+n.id+'"><strong>'+esc(n.name)+(S.target===n.id?' <span class="tag">TARGET</span>':'')+'</strong><em>'+dist(n,S.player)+' tiles away • '+(S.notes[n.id]?.some(k=>k.kind==="suspect")?"Marked suspicious":evidenceSummary(n))+'</em></div>').join("")||'<p class="muted">No one nearby. Walk along the streets.</p>';$("nearby").querySelectorAll("[data-id]").forEach(e=>e.onclick=()=>select(Number(e.dataset.id)));$("notes").innerHTML=Object.entries(S.notes).sort((a,b)=>Number(b[0]===String(S.selected))-Number(a[0]===String(S.selected))).map(([id,notes])=>'<div class="case-file"><strong>'+esc(S.people[Number(id)]?.name||"Unknown")+'</strong> <span class="tag">'+notes.length+' clues</span><div>'+notes.slice().reverse().map(x=>'<p class="evidence '+(x.kind==="conflict"?"warn":x.kind==="record"||x.kind==="observed"||x.kind==="confirmed"?"accent":"")+'"><strong>'+esc(({claim:"STATEMENT",witness:"WITNESS",record:"VERIFIED RECORD",observed:"OBSERVED",conflict:"CONTRADICTION",lead:"FOLLOW-UP",incident:"INCIDENT",suspect:"YOUR THEORY",confirmed:"CONFIRMED"}[x.kind]||"CLUE"))+'</strong><br>'+esc(x.text)+'</p>').join("")+'</div></div>').join("")||"No case files yet. Talk to witnesses, observe, or investigate suspects.";$("log").innerHTML=S.log.map(x=>"<p>"+esc(x)+"</p>").join("");draw()}
 function draw(){ctx.fillStyle="#0e2432";ctx.fillRect(0,0,768,544);for(let y=0;y<H;y++)for(let x=0;x<W;x++){let b=blocked(x,y);ctx.fillStyle=b?"#24344b":((x+y)%2?"#283b45":"#2c4148");ctx.fillRect(x*T,y*T,T-1,T-1);if(!b){ctx.fillStyle="#425963";if((x*11+y*7)%9===0)ctx.fillRect(x*T+7,y*T+7,2,2)}else{ctx.fillStyle=(x+y)%3===0?"#416477":"#324355";ctx.fillRect(x*T+3,y*T+3,26,26);ctx.fillStyle=((x+y)%4===0)?"#e88cab":"#edc580";ctx.fillRect(x*T+10,y*T+8,5,6);ctx.fillRect(x*T+19,y*T+8,5,6)}}venues.forEach((v,i)=>{ctx.fillStyle=["#f4b376","#ac8beb","#6de4c5","#f37a9d"][i];ctx.fillRect(v.x*T+3,v.y*T+4,25,24);ctx.fillStyle="#101b29";ctx.font="bold 15px system-ui";ctx.fillText(["☕","⌂","★","H"][i],v.x*T+8,v.y*T+22);ctx.fillStyle="#e0e8eb";ctx.font="11px system-ui";ctx.fillText(v.name,v.x*T-7,v.y*T-5)});S.people.filter(p=>p.alive).forEach(p=>{if(dist(p,S.player)>9)return;let xx=p.x*T+16,yy=p.y*T+16;ctx.fillStyle=p.id===S.selected?"#fd80b9":"#8bd5fa";ctx.fillRect(xx-5,yy-8,10,11);ctx.fillStyle="#d4bca6";ctx.fillRect(xx-4,yy-14,8,7);ctx.fillStyle="#122a38";ctx.fillRect(xx-4,yy+3,3,6);ctx.fillRect(xx+1,yy+3,3,6);if(p.id===S.selected){ctx.strokeStyle="#fff4bc";ctx.strokeRect(xx-10,yy-19,20,29)}if(p.id===S.target){ctx.strokeStyle="#ffcf81";ctx.beginPath();ctx.arc(xx,yy-4,13,0,Math.PI*2);ctx.stroke()}});let px=S.player.x*T+16,py=S.player.y*T+16;ctx.fillStyle="#ffe6ab";ctx.fillRect(px-6,py-9,12,13);ctx.fillStyle="#ffeacb";ctx.fillRect(px-5,py-16,10,8);ctx.fillStyle="#203b59";ctx.fillRect(px-6,py+4,4,7);ctx.fillRect(px+2,py+4,4,7);ctx.strokeStyle="#8debdc";ctx.strokeRect(px-10,py-20,20,32);ctx.fillStyle="#ffffff";ctx.font="bold 10px system-ui";ctx.fillText("YOU",px-12,py-24);let vignette=ctx.createRadialGradient(px,py,70,px,py,480);vignette.addColorStop(0,"#08121b00");vignette.addColorStop(1,"#04071999");ctx.fillStyle=vignette;ctx.fillRect(0,0,768,544)}
-$("start").onclick=()=>$("welcome").classList.add("hidden");$("help").onclick=()=>alertMsg("HOW TO PLAY","Move with WASD / arrow keys or click the streets. Select a nearby resident. Talk, observe, and investigate to collect fallible clues. Assign a target and complete your curse actions before using your power. You must eliminate a cursed person every night. Killing a civilian is fatal to you.");$("sound").onclick=toggleAudio;$("talk").onclick=()=>act("talk");$("observe").onclick=()=>act("observe");$("investigate").onclick=()=>act("investigate");$("markCurse").onclick=assign;$("trigger").onclick=invoke;$("end").onclick=()=>{S.time=0;dawn()};$("suspect").onclick=()=>{let p=current();if(!p)return;S.notes[p.id]=S.notes[p.id]||[];S.notes[p.id].push({text:"Your assessment: suspicious (not confirmed).",type:"suspect"});render()};$("clear").onclick=()=>{let p=current();if(!p)return;delete S.notes[p.id];render()};
+$("start").onclick=()=>$("welcome").classList.add("hidden");$("help").onclick=()=>alertMsg("HOW TO PLAY","Move with WASD / arrow keys or click the streets. Select a nearby resident. Talk, observe, and investigate to collect fallible clues. Assign a target and complete your curse actions before using your power. You must eliminate a cursed person every night. Killing a civilian is fatal to you.");$("sound").onclick=toggleAudio;$("talk").onclick=()=>act("talk");$("observe").onclick=()=>act("observe");$("investigate").onclick=()=>act("investigate");$("markCurse").onclick=assign;$("trigger").onclick=invoke;$("end").onclick=()=>{S.time=0;dawn()};$("suspect").onclick=()=>{let p=current();if(!p)return;addEvidence(p.id,{key:"suspect:"+p.id,kind:"suspect",text:"You marked "+p.name+" as suspicious. This is your theory, not proof."});render()};$("clear").onclick=()=>{let p=current();if(!p)return;S.notes[p.id]=(S.notes[p.id]||[]).filter(n=>n.kind!=="suspect");render()};
 window.addEventListener("keydown",e=>{if(!$("welcome").classList.contains("hidden")||!$("message").classList.contains("hidden"))return;const dirs={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};if(dirs[e.key]){e.preventDefault();walk(...dirs[e.key])}else if(e.key.toLowerCase()==="e"){let n=nearby()[0];if(n)select(n.id)}});
 canvas.addEventListener("click",e=>{let r=canvas.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)*canvas.width/r.width/T),y=Math.floor((e.clientY-r.top)*canvas.height/r.height/T);let p=S.people.find(p=>p.alive&&p.x===x&&p.y===y);if(p&&dist(p,S.player)<=3)select(p.id);else if(!blocked(x,y)){let dx=Math.sign(x-S.player.x),dy=Math.sign(y-S.player.y);if(Math.abs(x-S.player.x)>=Math.abs(y-S.player.y)){if(dx)walk(dx,0);else if(dy)walk(0,dy)}else if(dy)walk(0,dy)}});
 init();
