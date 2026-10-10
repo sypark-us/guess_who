@@ -72,3 +72,26 @@ test("The Confession needs different actions, not repeated talk alone",()=>{
  assert.equal(result.afterTalk,1);
  assert.equal(result.afterBoth,2);
 });
+
+test("all resident names are unique, natural, and stable across investigation",()=>{
+ const {run}=loadGame();
+ const result=run(`(()=>{
+  const people=S.people;
+  const original=people.map(p=>({id:p.id,name:p.name}));
+  const first=people.find(p=>p.cursed);
+  S.player={x:first.x,y:first.y};S.selected=first.id;
+  act("talk");act("talk");act("investigate");
+  return {
+   population:original.length,
+   unique:new Set(original.map(p=>p.name)).size,
+   numbered:original.filter(p=>/ \\d+$/.test(p.name)).map(p=>p.name),
+   unchanged:original.every(({id,name})=>S.people.find(p=>p.id===id).name===name),
+   cited:(S.notes[first.id]||[]).some(e=>e.text.includes(first.name))
+  };
+ })()`);
+ assert.equal(result.population,99);
+ assert.equal(result.unique,99);
+ assert.equal(result.numbered.length,0);
+ assert.equal(result.unchanged,true);
+ assert.equal(result.cited,true);
+});
