@@ -145,8 +145,35 @@
       remember(observer,event,{score:plan.type==="hunt"?25:plan.type==="mislead"?17:plan.type==="follow"?14:plan.type==="investigate"?5:-2});
       if(plan.type==="mislead")trust(observer,npc.id,-4);
    }
-   if(plan.type==="negotiate"||plan.type==="socialize")trust(npc,subject.id,3);
+   if(plan.type==="negotiate"||plan.type==="socialize"){
+     trust(npc,subject.id,3);
+     trust(subject,npc.id,2);
+   }
    if(plan.type==="warn")trust(subject,npc.id,3);
+   if(plan.type==="investigate"){
+     // A deliberate investigation uncovers an existing public trace; it never
+     // reads the subject's supernatural status or secret ability.
+     const record=subject.caseEvent;
+     if(record){
+       remember(npc,{id:"researched-"+npc.id+"-"+record.id,kind:"record",
+         tick:world.tick,actorId:subject.id,targetId:record.otherId,
+         place:record.place,source:"independent location record",
+         description:subject.name+" was at "+record.place+" while "+record.action},
+         {score:/private|followed|secret/.test(record.action)?12:0});
+     }
+   }
+   if(plan.type==="mislead"){
+     // Rumors alter what listeners believe, not what is objectively true.
+     // Every rumor retains its source so it can later be challenged.
+     for(const witness of witnesses){
+       if(witness.id===subject.id)continue;
+       const rumor={id:event.id+":rumor:"+witness.id,kind:"rumor",tick:world.tick,
+         actorId:subject.id,targetId:subject.id,place,
+         source:"unverified claim from "+npc.name,
+         description:npc.name+" accused "+subject.name+" without verifiable proof"};
+       remember(witness,rumor,{score:12});
+     }
+   }
    npc.mind.plan=null;
    return event;
  }
