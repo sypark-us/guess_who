@@ -17,6 +17,8 @@ function loadGame(){
  }
  const context={document:{getElementById:node},window:{addEventListener(){}},console};
  vm.createContext(context);
+ const sim=fs.readFileSync(path.join(__dirname,"..","simulation.js"),"utf8");
+ vm.runInContext(sim,context,{timeout:1500});
  vm.runInContext(match[1],context,{timeout:1500});
  function run(expr){return vm.runInContext(expr,context,{timeout:1500})}
  return {run,node};
