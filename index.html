@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CURSED 100 v0.8.1 — Hong Kong</title><style>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CURSED 100 v0.9.0 — Hong Kong</title><style>
 :root{color-scheme:dark;--bg:#0a111e;--panel:#111d2c;--panel2:#192739;--line:#344154;--text:#e8edfa;--muted:#91a5bc;--pink:#fb649d;--teal:#61dfd0;--gold:#ffd28b;--red:#fa7e81}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 40% 0,#26304c 0,#0a111e 60%);font:14px/1.5 system-ui,-apple-system,sans-serif;color:var(--text)}button,select{font:inherit}button{cursor:pointer;color:var(--text);background:#26364e;border:1px solid #50607a;padding:9px 13px;border-radius:8px}button:hover{border-color:var(--teal);background:#34445a}button:disabled{opacity:.38;cursor:not-allowed}button.primary{background:#0c726f;border-color:#57d9cb}button.danger{background:#7e3149;border-color:#d76889}button.active{border-color:var(--gold);color:var(--gold)}header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1px solid var(--line);background:#101a2a}header h1{font-size:20px;margin:0;letter-spacing:3px;color:var(--pink)}header small{color:var(--muted)}.shell{max-width:1440px;margin:auto;padding:16px;display:grid;grid-template-columns:minmax(480px,1fr) 340px;gap:14px}.world{min-width:0}.panel{background:#111b2bcc;border:1px solid #36445d;border-radius:12px;overflow:hidden}.panel>h2{font-size:12px;text-transform:uppercase;letter-spacing:2px;color:var(--teal);margin:0;padding:12px 14px;border-bottom:1px solid var(--line)}.canvaswrap{position:relative;background:#081425}canvas{display:block;width:100%;image-rendering:pixelated;cursor:crosshair}#overlay{position:absolute;left:12px;top:10px;max-width:65%;pointer-events:none;text-shadow:0 2px 4px #000;font-size:12px;color:#e4f8f6}.hud{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;padding:12px;background:#101d2d}.stat{display:flex;flex-direction:column}.stat strong{font-size:19px}.stat span{font-size:11px;color:var(--muted)}.stack{display:grid;gap:12px;align-content:start}.content{padding:12px 14px}.row{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}.row button{flex:1}.muted{color:var(--muted)}.small{font-size:12px}.accent{color:var(--teal)}.warn{color:var(--gold)}.pink{color:var(--pink)}.log{max-height:220px;overflow:auto;font-size:12px}.log p{margin:0 0 8px;border-bottom:1px solid #27364a;padding-bottom:7px}.list{max-height:275px;overflow:auto}.person{border:1px solid #344258;padding:9px;border-radius:8px;margin-bottom:7px;background:#182638;cursor:pointer}.person:hover,.person.selected{border-color:var(--teal)}.person strong{display:block}.person em{font-style:normal;font-size:11px;color:var(--muted)}.tag{font-size:10px;border:1px solid #51667b;border-radius:12px;padding:2px 7px;color:var(--gold);display:inline-block}.dialog{position:fixed;inset:0;background:#050a12b9;display:grid;place-items:center;padding:16px;z-index:9}.modal{max-width:540px;width:100%;background:#152239;border:1px solid #66849b;border-radius:14px;padding:24px;box-shadow:0 15px 70px #000a}.modal h2{color:var(--pink);letter-spacing:2px;margin:0 0 10px}.modal p{color:#c5d2e2}.modal button{margin-top:12px}.hidden{display:none!important}.legend{font-size:12px;color:#b6c5d7;padding:10px 14px;display:flex;gap:15px;flex-wrap:wrap}.dot{width:9px;height:9px;display:inline-block;margin-right:5px;border-radius:50%}.footer{max-width:1440px;margin:0 auto;padding:0 18px 22px;color:var(--muted);font-size:12px}input[type=range]{accent-color:#49c7bb;width:100%}@media(max-width:960px){.shell{grid-template-columns:1fr}.stack{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:560px){.shell{padding:8px;grid-template-columns:minmax(0,1fr)}.stack{grid-template-columns:1fr}header h1{font-size:15px}.hud{gap:8px}.stat strong{font-size:15px}} 
 /* Dashboard layout: keep the map and all four panels visible on desktop.
    Long lists scroll inside their own cards instead of pushing important panels
@@ -103,9 +103,66 @@ button:focus-visible, .person:focus-visible { outline: 2px solid var(--teal); ou
 }
 .build-info{display:inline-block;font-size:11px;margin-left:9px;color:#85eed6;font-weight:700;letter-spacing:.3px;background:#123830;border:1px solid #237a67;border-radius:12px;padding:2px 8px;white-space:nowrap}
 @media(max-width:560px){.build-info{display:block;width:max-content;margin:4px 0 0}}
+
+/* Neon-noir visual refresh; keep the compact four-panel dashboard unchanged. */
+body{
+  background:radial-gradient(ellipse at 25% -5%,#273b50 0%,#111e30 34%,#080f1b 80%);
+}
+header{
+  border-bottom-color:#3b5467;
+  box-shadow:0 5px 20px #02091680;
+  background:linear-gradient(135deg,#18283a,#101728 65%,#211b33);
+}
+header h1{color:#ff89ab;text-shadow:0 0 16px #d9488950}
+.panel{
+  background:linear-gradient(155deg,#152538e8,#101a2bdc);
+  border-color:#476074;
+  box-shadow:0 5px 25px #0208135e,inset 0 1px #93c8ba13;
+}
+.panel>h2{background:#1a3042a8;color:#82ebd0}
+.world{border-color:#6f98a0;box-shadow:0 5px 38px #010813ad,0 0 0 1px #9ccead22}
+.canvaswrap{
+  background:#061421;
+  border-bottom:1px solid #40606a;
+  overflow:hidden;
+}
+.canvaswrap canvas{filter:saturate(1.12) contrast(1.05);}
+#overlay{
+  max-width:calc(100% - 20px);
+  top:auto;
+  bottom:12px;
+  left:12px;
+  background:#0a1625d9;
+  padding:7px 10px;
+  border:1px solid #6c9a9d6e;
+  border-left:3px solid #67dbc6;
+  border-radius:6px;
+  backdrop-filter:blur(5px);
+  color:#b8ceda;
+  line-height:1.35;
+  text-shadow:none;
+  display:flex;
+  gap:5px;
+  flex-direction:column;
+  font-size:10px;
+}
+#overlay strong{font-size:10px;color:#f2dbad;letter-spacing:1.3px}
+.hud{
+  background:linear-gradient(90deg,#112337,#182e3f);
+  border-bottom:1px solid #30485a;
+  padding:12px 15px;
+}
+.stat strong{color:#edf8f5;font-variant-numeric:tabular-nums;letter-spacing:1px}
+.stat span{color:#8fb4ba;font-size:10px;letter-spacing:.8px}
+.legend{background:#101c2c;color:#acc1d0}
+button{transition:background .12s ease,border-color .12s ease,transform .12s ease}
+button:hover:not(:disabled){transform:translateY(-1px)}
+.person{background:linear-gradient(90deg,#1b3040,#1a2739)}
+.person.selected{background:#263e4b}
+@media(prefers-reduced-motion:reduce){button{transition:none}button:hover:not(:disabled){transform:none}}
 </style></head><body>
-<header><div><h1>CURSED 100 <small> / HONG KONG</small></h1><small>NEON NOIR • SUPERNATURAL DEDUCTION</small> <span class="build-info" id="versionLabel">v0.8.1 • NPC SIM LIVE</span></div><div class="row"><button id="sound">♫ Sound: Off</button><button id="help">? How to play</button></div></header>
-<main class="shell"><section class="world panel"><div class="canvaswrap"><canvas id="map" width="768" height="544" aria-label="Top-down Hong Kong city map"></canvas><div id="overlay">WASD / arrow keys to move • click a walkable tile to walk • E to interact</div></div><div class="hud"><div class="stat"><span>NIGHT</span><strong id="night">1</strong></div><div class="stat"><span>TIME LEFT</span><strong id="time">12:00</strong></div><div class="stat"><span>CURSED ALIVE</span><strong id="alive">20</strong></div><div class="stat"><span>YOUR STATUS</span><strong id="status" class="warn">UNFULFILLED</strong></div></div><div class="legend"><span><i class="dot" style="background:#fce2a4"></i>You</span><span><i class="dot" style="background:#8bd5fa"></i>Other people</span><span><i class="dot" style="background:#f58dbb"></i>Selected</span><span>People have no visible cursed markers.</span></div></section>
+<header><div><h1>CURSED 100 <small> / HONG KONG</small></h1><small>NEON NOIR • SUPERNATURAL DEDUCTION</small> <span class="build-info" id="versionLabel">v0.9.0 • HONG KONG NOIR</span></div><div class="row"><button id="sound">♫ Sound: Off</button><button id="help">? How to play</button></div></header>
+<main class="shell"><section class="world panel"><div class="canvaswrap"><canvas id="map" width="768" height="544" aria-label="Top-down Hong Kong city map"></canvas><div id="overlay"><strong>MONG KOK / AFTER DARK</strong><span>WASD • arrows • click to move • E to select</span></div></div><div class="hud"><div class="stat"><span>NIGHT</span><strong id="night">1</strong></div><div class="stat"><span>TIME LEFT</span><strong id="time">12:00</strong></div><div class="stat"><span>CURSED ALIVE</span><strong id="alive">20</strong></div><div class="stat"><span>YOUR STATUS</span><strong id="status" class="warn">UNFULFILLED</strong></div></div><div class="legend"><span><i class="dot" style="background:#fce2a4"></i>You</span><span><i class="dot" style="background:#8bd5fa"></i>Other people</span><span><i class="dot" style="background:#f58dbb"></i>Selected</span><span>People have no visible cursed markers.</span></div></section>
 <aside class="stack">
 <section class="panel"><h2>My curse</h2><div class="content"><strong id="curseName" class="pink"></strong><p id="curseText" class="small"></p><div class="small muted">Each night, eliminate a CURSED target. If your curse kills a civilian, you die too. If you fail before dawn, you die.</div><div class="row"><button id="markCurse" class="primary">Set selected as target</button><button id="trigger">Use curse</button></div><div class="small" id="curseState"></div></div></section>
 <section class="panel"><h2>Nearby people / Actions</h2><div class="content"><div id="nearby" class="list small"></div><div class="row"><button id="talk">Talk</button><button id="observe">Observe</button><button id="investigate">Investigate (2 min)</button></div><div id="detail" class="small muted">Move close to a person and select them.</div></div></section>
@@ -114,10 +171,11 @@ button:focus-visible, .person:focus-visible { outline: 2px solid var(--teal); ou
 </aside></main><p class="footer">Prototype: 100 simulated residents (20 cursed, 80 civilian) • 2D playable district • 3 curse archetypes • seed-based identities • English-first translation keys • Web Audio synthesized atmosphere. All identities are hidden until proven by outcomes.</p>
 <div id="welcome" class="dialog"><div class="modal"><h2>THE FIRST NIGHT</h2><p>One hundred residents of a Hong Kong neighborhood wake to a strange new reality. Twenty of them, including you, are cursed.</p><p>Only cursed victims can satisfy the hunger. Kill an innocent and you die with them. Let the night end without a kill and you die alone.</p><p>Your power is different every run. Watch people's routines, gather evidence, manipulate their actions, and survive.</p><p><strong>Move:</strong> WASD / arrow keys or map click. <strong>Interact:</strong> E near a person. <strong>Investigate:</strong> gather potentially imperfect evidence. People may lie.</p><button id="start" class="primary">ENTER MONG KOK</button></div></div>
 <div id="message" class="dialog hidden"><div class="modal"><h2 id="msgTitle"></h2><p id="msgBody"></p><button id="msgClose" class="primary">Continue</button></div></div>
-<script src="simulation.js?v=0.8.1"></script>
+<script src="simulation.js?v=0.9.0"></script>
+<script src="graphics.js?v=0.9.0"></script>
 <script>
 "use strict";
-const BUILD_VERSION="0.8.1";
+const BUILD_VERSION="0.9.0";
 const I18N={en:{curseSuccess:"Curse fulfilled",curseFailed:"Curse failed",civilian:"Civilian",cursed:"Cursed",night:"Night",dawn:"Dawn"}};
 const t=(key)=>I18N.en[key]||key; // Data and UI text are kept separate from rules for future locales.
 const $=id=>document.getElementById(id), W=24,H=17,T=32;
@@ -372,9 +430,29 @@ function dawn(){
 }
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function render(){const p=current();$("night").textContent=S.night;$("time").textContent=String(Math.floor(S.time/60)).padStart(2,"0")+":"+String(S.time%60).padStart(2,"0");$("alive").textContent=1+S.people.filter(x=>x.alive&&x.cursed).length;$("status").textContent=S.over?"ENDED":S.fulfilled?"SAFE TONIGHT":"UNFULFILLED";$("status").className=S.fulfilled?"accent":"warn";$("curseName").textContent=S.curse.name;$("curseText").textContent=S.curse.description;$("curseState").textContent=target()?"Target: "+target().name+" • Progress "+(target().progress||0)+"/"+S.curse.goal:"No target selected";$("detail").textContent=p?p.name+" • "+p.job+" • "+p.profile.traits.join(", ")+" • "+evidenceSummary(p)+" • identity not verified.":"Move close to a person and select them.";let can=!!p&&dist(p,S.player)<=3&&!S.over;["talk","observe","investigate","markCurse"].forEach(x=>$(x).disabled=!can);$("trigger").disabled=S.over||!target()||S.fulfilled;$("nearby").innerHTML=nearby().map(n=>'<div class="person '+(n.id===S.selected?"selected":"")+'" data-id="'+n.id+'"><strong>'+esc(n.name)+(S.target===n.id?' <span class="tag">TARGET</span>':'')+'</strong><em>'+dist(n,S.player)+' tiles away • '+(S.notes[n.id]?.some(k=>k.kind==="suspect")?"Marked suspicious":evidenceSummary(n))+'</em></div>').join("")||'<p class="muted">No one nearby. Walk along the streets.</p>';$("nearby").querySelectorAll("[data-id]").forEach(e=>e.onclick=()=>select(Number(e.dataset.id)));$("notes").innerHTML=Object.entries(S.notes).sort((a,b)=>Number(b[0]===String(S.selected))-Number(a[0]===String(S.selected))).map(([id,notes])=>'<div class="case-file"><strong>'+esc(S.people[Number(id)]?.name||"Unknown")+'</strong> <span class="tag">'+notes.length+' clues</span><div>'+notes.slice().reverse().map(x=>'<p class="evidence '+(x.kind==="conflict"?"warn":x.kind==="record"||x.kind==="observed"||x.kind==="confirmed"?"accent":"")+'"><strong>'+esc(({claim:"STATEMENT",witness:"WITNESS",record:"VERIFIED RECORD",observed:"OBSERVED",conflict:"CONTRADICTION",lead:"FOLLOW-UP",incident:"INCIDENT",suspect:"YOUR THEORY",confirmed:"CONFIRMED"}[x.kind]||"CLUE"))+'</strong><br>'+esc(x.text)+'</p>').join("")+'</div></div>').join("")||"No case files yet. Talk to witnesses, observe, or investigate suspects.";$("log").innerHTML=S.log.map(x=>"<p>"+esc(x)+"</p>").join("");draw()}
-function draw(){ctx.fillStyle="#0e2432";ctx.fillRect(0,0,768,544);for(let y=0;y<H;y++)for(let x=0;x<W;x++){let b=blocked(x,y);ctx.fillStyle=b?"#24344b":((x+y)%2?"#283b45":"#2c4148");ctx.fillRect(x*T,y*T,T-1,T-1);if(!b){ctx.fillStyle="#425963";if((x*11+y*7)%9===0)ctx.fillRect(x*T+7,y*T+7,2,2)}else{ctx.fillStyle=(x+y)%3===0?"#416477":"#324355";ctx.fillRect(x*T+3,y*T+3,26,26);ctx.fillStyle=((x+y)%4===0)?"#e88cab":"#edc580";ctx.fillRect(x*T+10,y*T+8,5,6);ctx.fillRect(x*T+19,y*T+8,5,6)}}venues.forEach((v,i)=>{ctx.fillStyle=["#f4b376","#ac8beb","#6de4c5","#f37a9d"][i];ctx.fillRect(v.x*T+3,v.y*T+4,25,24);ctx.fillStyle="#101b29";ctx.font="bold 15px system-ui";ctx.fillText(["☕","⌂","★","H"][i],v.x*T+8,v.y*T+22);ctx.fillStyle="#e0e8eb";ctx.font="11px system-ui";ctx.fillText(v.name,v.x*T-7,v.y*T-5)});S.people.filter(p=>p.alive).forEach(p=>{if(dist(p,S.player)>9)return;let xx=p.x*T+16,yy=p.y*T+16;ctx.fillStyle=p.id===S.selected?"#fd80b9":"#8bd5fa";ctx.fillRect(xx-5,yy-8,10,11);ctx.fillStyle="#d4bca6";ctx.fillRect(xx-4,yy-14,8,7);ctx.fillStyle="#122a38";ctx.fillRect(xx-4,yy+3,3,6);ctx.fillRect(xx+1,yy+3,3,6);if(p.id===S.selected){ctx.strokeStyle="#fff4bc";ctx.strokeRect(xx-10,yy-19,20,29)}if(p.id===S.target){ctx.strokeStyle="#ffcf81";ctx.beginPath();ctx.arc(xx,yy-4,13,0,Math.PI*2);ctx.stroke()}});let px=S.player.x*T+16,py=S.player.y*T+16;ctx.fillStyle="#ffe6ab";ctx.fillRect(px-6,py-9,12,13);ctx.fillStyle="#ffeacb";ctx.fillRect(px-5,py-16,10,8);ctx.fillStyle="#203b59";ctx.fillRect(px-6,py+4,4,7);ctx.fillRect(px+2,py+4,4,7);ctx.strokeStyle="#8debdc";ctx.strokeRect(px-10,py-20,20,32);ctx.fillStyle="#ffffff";ctx.font="bold 10px system-ui";ctx.fillText("YOU",px-12,py-24);let vignette=ctx.createRadialGradient(px,py,70,px,py,480);vignette.addColorStop(0,"#08121b00");vignette.addColorStop(1,"#04071999");ctx.fillStyle=vignette;ctx.fillRect(0,0,768,544)}
+const sceneRenderer=(typeof CursedGraphics!=="undefined")?
+  CursedGraphics.createRenderer(canvas,{blocked,seed:RUN_SEED}):null;
+function draw(){
+  if(sceneRenderer){
+    const clock=(typeof performance!=="undefined"&&performance.now)?performance.now():0;
+    sceneRenderer.draw(S,clock);
+    return;
+  }
+  // Safe legacy fallback if an asset was not fetched by the browser.
+  ctx.fillStyle="#0e2432";ctx.fillRect(0,0,768,544);for(let y=0;y<H;y++)for(let x=0;x<W;x++){let b=blocked(x,y);ctx.fillStyle=b?"#24344b":((x+y)%2?"#283b45":"#2c4148");ctx.fillRect(x*T,y*T,T-1,T-1);if(!b){ctx.fillStyle="#425963";if((x*11+y*7)%9===0)ctx.fillRect(x*T+7,y*T+7,2,2)}else{ctx.fillStyle=(x+y)%3===0?"#416477":"#324355";ctx.fillRect(x*T+3,y*T+3,26,26);ctx.fillStyle=((x+y)%4===0)?"#e88cab":"#edc580";ctx.fillRect(x*T+10,y*T+8,5,6);ctx.fillRect(x*T+19,y*T+8,5,6)}}venues.forEach((v,i)=>{ctx.fillStyle=["#f4b376","#ac8beb","#6de4c5","#f37a9d"][i];ctx.fillRect(v.x*T+3,v.y*T+4,25,24);ctx.fillStyle="#101b29";ctx.font="bold 15px system-ui";ctx.fillText(["☕","⌂","★","H"][i],v.x*T+8,v.y*T+22);ctx.fillStyle="#e0e8eb";ctx.font="11px system-ui";ctx.fillText(v.name,v.x*T-7,v.y*T-5)});S.people.filter(p=>p.alive).forEach(p=>{if(dist(p,S.player)>9)return;let xx=p.x*T+16,yy=p.y*T+16;ctx.fillStyle=p.id===S.selected?"#fd80b9":"#8bd5fa";ctx.fillRect(xx-5,yy-8,10,11);ctx.fillStyle="#d4bca6";ctx.fillRect(xx-4,yy-14,8,7);ctx.fillStyle="#122a38";ctx.fillRect(xx-4,yy+3,3,6);ctx.fillRect(xx+1,yy+3,3,6);if(p.id===S.selected){ctx.strokeStyle="#fff4bc";ctx.strokeRect(xx-10,yy-19,20,29)}if(p.id===S.target){ctx.strokeStyle="#ffcf81";ctx.beginPath();ctx.arc(xx,yy-4,13,0,Math.PI*2);ctx.stroke()}});let px=S.player.x*T+16,py=S.player.y*T+16;ctx.fillStyle="#ffe6ab";ctx.fillRect(px-6,py-9,12,13);ctx.fillStyle="#ffeacb";ctx.fillRect(px-5,py-16,10,8);ctx.fillStyle="#203b59";ctx.fillRect(px-6,py+4,4,7);ctx.fillRect(px+2,py+4,4,7);ctx.strokeStyle="#8debdc";ctx.strokeRect(px-10,py-20,20,32);ctx.fillStyle="#ffffff";ctx.font="bold 10px system-ui";ctx.fillText("YOU",px-12,py-24);let vignette=ctx.createRadialGradient(px,py,70,px,py,480);vignette.addColorStop(0,"#08121b00");vignette.addColorStop(1,"#04071999");ctx.fillStyle=vignette;ctx.fillRect(0,0,768,544)}
 $("start").onclick=()=>$("welcome").classList.add("hidden");$("help").onclick=()=>alertMsg("HOW TO PLAY","Move with WASD / arrow keys or click the streets. Select a nearby resident. Talk, observe, and investigate to collect fallible clues. Assign a target and complete your curse actions before using your power. You must eliminate a cursed person every night. Killing a civilian is fatal to you.");$("sound").onclick=toggleAudio;$("talk").onclick=()=>act("talk");$("observe").onclick=()=>act("observe");$("investigate").onclick=()=>act("investigate");$("markCurse").onclick=assign;$("trigger").onclick=invoke;$("end").onclick=()=>{S.time=0;dawn()};$("suspect").onclick=()=>{let p=current();if(!p)return;addEvidence(p.id,{key:"suspect:"+p.id,kind:"suspect",text:"You marked "+p.name+" as suspicious. This is your theory, not proof."});render()};$("clear").onclick=()=>{let p=current();if(!p)return;S.notes[p.id]=(S.notes[p.id]||[]).filter(n=>n.kind!=="suspect");render()};
 window.addEventListener("keydown",e=>{if(!$("welcome").classList.contains("hidden")||!$("message").classList.contains("hidden"))return;const dirs={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0],w:[0,-1],s:[0,1],a:[-1,0],d:[1,0]};if(dirs[e.key]){e.preventDefault();walk(...dirs[e.key])}else if(e.key.toLowerCase()==="e"){let n=nearby()[0];if(n)select(n.id)}});
 canvas.addEventListener("click",e=>{let r=canvas.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)*canvas.width/r.width/T),y=Math.floor((e.clientY-r.top)*canvas.height/r.height/T);let p=S.people.find(p=>p.alive&&p.x===x&&p.y===y);if(p&&dist(p,S.player)<=3)select(p.id);else if(!blocked(x,y)){let dx=Math.sign(x-S.player.x),dy=Math.sign(y-S.player.y);if(Math.abs(x-S.player.x)>=Math.abs(y-S.player.y)){if(dx)walk(dx,0);else if(dy)walk(0,dy)}else if(dy)walk(0,dy)}});
 init();
+if(sceneRenderer&&typeof window.requestAnimationFrame==="function"){
+  let lastFrame=0;
+  const animate=(clock)=>{
+    if(clock-lastFrame>=66 && !document.hidden){
+      sceneRenderer.draw(S,clock);
+      lastFrame=clock;
+    }
+    window.requestAnimationFrame(animate);
+  };
+  window.requestAnimationFrame(animate);
+}
 </script></body></html>

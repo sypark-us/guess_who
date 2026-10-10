@@ -13,7 +13,11 @@ Enable music through **Sound: On** after entering the game (browser audio requir
 ## Current prototype
 
 - English-only interface with an isolated translation dictionary for future localization (`en`, later `ko` and `zh-HK`).
-- 24x17 tile rendered 2D Hong Kong district, simulated player movement, neon building sprites and character silhouettes.
+- **v0.9 graphical refresh**: detailed 24×17-tile procedural Hong Kong pixel-art district, with four distinct roof and storefront styles, Chinese/English signage, wet pavement, narrow sidewalks, lit windows, rooftop machinery, street furniture, signs and night-market stalls.
+- Animated **rain**, neon light pools, wet-road reflections and subtle character idle movement, using a cached static scenery layer to limit frame rendering costs.
+- Deterministically generated character **visual styles** (hair, clothes, accessories and color combinations) based on each character's ID. Clothing never depends on whether someone is cursed.
+- Clearly marked player and selected/targeted people; no outlines or special effects reveal unconfirmed possession.
+- Existing compact investigator dashboard remains visible while the map and UI receive a restrained neon-noir polish.
 - Exactly 100 residents total: 1 player, 19 other cursed NPCs, and 80 civilians.
 - Hidden NPC identity: ordinary appearance does not reveal cursed status.
 - Three playable curse archetypes picked at game start: The Echo, The Witness, and The Confession.
@@ -27,8 +31,16 @@ Enable music through **Sound: On** after entering the game (browser audio requir
 - Rival encounters now generate actor/target event logs at dawn, with civilian backfire consequences. This is an **abstract prototype resolution**, not complete curse-condition combat.
 - New games have different seeds; append `?seed=12345` to the GitHub Pages URL to replay exactly the same procedural starting scenario.
 - Pre-night activity events, seeded local leads, and abstract nightly attrition.
-- Synthesized atmospheric tones and cue effects using Web Audio, no copyrighted external audio.
+- Synthesized atmospheric tones and cue effects using Web Audio, no copyrighted external audio. The visual effects are generated in Canvas; there are no third-party art assets.
 - Single self-contained HTML for easy iteration.
+
+## Visual mode
+
+Open the game at `https://sypark-us.github.io/guess_who/` and look for the **v0.9.0 • HONG KONG NOIR** label. Use `Ctrl+Shift+R` to bypass stale page caching. The updated renderer is in `graphics.js`, with versioned script URLs.
+
+- Graphics are procedurally drawn pixel art with no image downloads or external dependencies.
+- Canvas animation is capped at roughly 15 fps and respects `prefers-reduced-motion` for CSS transitions; rainfall is cosmetic only.
+- Character appearances are deterministic per world seed and ID, with identical appearance rules for demons and civilians.
 
 ## Investigation gameplay
 
@@ -48,7 +60,7 @@ node --test tests/*.test.cjs
 
 ## Limitations / next work
 
-This is an early **gameplay prototype**, not the complete design: fully validated NPC curse-condition combat, fully realized alliances/betrayals, a persistent save system, multi-location interior navigation, richer procedural curse generation, story content, production pixel assets, and fully composed soundtrack are not implemented. Rival NPCs have independent plans and social beliefs, but their lethal conflict still uses an abstract end-of-night probability check rather than the player's exact curse-condition engine. The current scenario contains 20 cursed characters rather than the planned full 100 cursed-plus-civilians world. The visual/audio system uses generated primitives, not delivered hand-drawn sprites or recorded music.
+This is an early **gameplay prototype**, not the complete design: fully validated NPC curse-condition combat, fully realized alliances/betrayals, a persistent save system, multi-location interior navigation, richer procedural curse generation, story content, handcrafted production sprites/interiors, and a fully composed soundtrack are not implemented. Rival NPCs have independent plans and social beliefs, but their lethal conflict still uses an abstract end-of-night probability check rather than the player's exact curse-condition engine. The current scenario contains 20 cursed characters rather than the planned full 100 cursed-plus-civilians world. The visual/audio system uses generated primitives, not delivered hand-drawn sprites or recorded music.
 
 ## Rules
 
