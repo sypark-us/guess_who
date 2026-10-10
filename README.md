@@ -21,7 +21,12 @@ Enable music through **Sound: On** after entering the game (browser audio requir
 - A curse that kills a civilian also kills the player; only cursed kills fulfill that night's requirement.
 - Failing to kill a cursed person by dawn ends the run.
 - Persistent case notebook that groups witness statements, a suspect's own alibi, independent location records and direct observations by person; contradictory alibis are highlighted. Statements are not necessarily truthful, but recorded events are consistent and cross-checkable.
-- Lightweight off-screen NPC movement, pre-night activity events, seeded local leads, and abstract nightly attrition.
+- Offline, deterministic NPC social simulation: individual traits, human needs, fears, demon drives, private memories, beliefs and relationships.
+- NPCs plan to investigate, follow, negotiate, mislead, warn, work or hunt using their **own** perceived information rather than privileged hidden identity data.
+- Witnessed NPC actions generate permanent notes, while investigations, rumors and trust changes update NPC knowledge independently of world truth.
+- Rival encounters now generate actor/target event logs at dawn, with civilian backfire consequences. This is an **abstract prototype resolution**, not complete curse-condition combat.
+- New games have different seeds; append `?seed=12345` to the GitHub Pages URL to replay exactly the same procedural starting scenario.
+- Pre-night activity events, seeded local leads, and abstract nightly attrition.
 - Synthesized atmospheric tones and cue effects using Web Audio, no copyrighted external audio.
 - Single self-contained HTML for easy iteration.
 
@@ -35,15 +40,15 @@ Enable music through **Sound: On** after entering the game (browser audio requir
 - Civilian behavior can look suspicious, and cursed NPCs can behave normally. A suspicious report is never automatic proof of being cursed.
 - On desktop, the My Curse and Nearby People panels are compact; the notebook and incidents receive more height.
 
-To run basic regression tests with Node.js (no packages required):
+To run all regression tests with Node.js (no packages required):
 
 ```bash
-node --test tests/investigation.test.cjs
+node --test tests/*.test.cjs
 ```
 
 ## Limitations / next work
 
-This is an early **gameplay prototype**, not the complete design: automatic rival curse planning, actual collaboration/betrayal mechanics, a persistent save system, multi-location interior navigation, richer procedural curse generation, story content, production pixel assets, and fully composed soundtrack are not implemented. NPC curse combat is represented by an abstract nightly simulation. The current scenario contains 20 cursed characters rather than the planned full 100 cursed-plus-civilians world. The visual/audio system uses generated primitives, not delivered hand-drawn sprites or recorded music.
+This is an early **gameplay prototype**, not the complete design: fully validated NPC curse-condition combat, fully realized alliances/betrayals, a persistent save system, multi-location interior navigation, richer procedural curse generation, story content, production pixel assets, and fully composed soundtrack are not implemented. Rival NPCs have independent plans and social beliefs, but their lethal conflict still uses an abstract end-of-night probability check rather than the player's exact curse-condition engine. The current scenario contains 20 cursed characters rather than the planned full 100 cursed-plus-civilians world. The visual/audio system uses generated primitives, not delivered hand-drawn sprites or recorded music.
 
 ## Rules
 
@@ -55,4 +60,4 @@ This is an early **gameplay prototype**, not the complete design: automatic riva
 
 ## Recommended next milestone
 
-Build a more complete NPC intent planner and event ledger, validate curse feasibility/escape signals with automated tests, and add actual tile pathfinding and contextual object interactions.
+Tie rival attack attempts to the same exact curse-action validator used by the player; add proper time-scoped conversations, investigation menus, alliance negotiations, tile pathfinding and contextual object interactions. Build a separate handcrafted story mode in a `deathnote/` area only after story and ending design are approved.
